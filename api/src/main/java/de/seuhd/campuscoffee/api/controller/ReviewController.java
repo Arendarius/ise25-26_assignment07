@@ -30,15 +30,17 @@ import static de.seuhd.campuscoffee.api.openapi.Resource.REVIEW;
 public class ReviewController extends CrudController<Review, ReviewDto, Long> {
 
     // TODO: Correctly implement the service() and mapper() methods. Note the IntelliJ warning resulting from the @NonNull annotation.
+    private final ReviewService reviewService;
+    private final ReviewDtoMapper reviewDtoMapper;
 
     @Override
     protected @NonNull CrudService<Review, Long> service() {
-        return null;
+        return reviewService;
     }
 
     @Override
     protected @NonNull DtoMapper<Review, ReviewDto> mapper() {
-        return null;
+        return reviewDtoMapper;
     }
 
     @Operation
@@ -49,4 +51,55 @@ public class ReviewController extends CrudController<Review, ReviewDto, Long> {
     }
 
     // TODO: Implement the missing methods/endpoints.
-}
+
+
+    @Operation
+    @CrudOperation(operation=GET_BY_ID, resource=REVIEW)
+    @GetMapping("/{id}")
+    public @NonNull ResponseEntity<ReviewDto> getById(
+            @Parameter(description="Unique identifier of the REVIEW to retrieve.", required=true)
+            @PathVariable Long id) {
+        return super.getById(id);
+    }
+
+    @Operation
+    @CrudOperation(operation=CREATE, resource=REVIEW)
+    @PostMapping("")
+    public @NonNull ResponseEntity<ReviewDto> create(
+            @Parameter(description="Data of the REVIEW to create.", required=true)
+            @RequestBody @Valid ReviewDto reviewDto) {
+        return super.create(reviewDto);
+    }
+
+    @Operation
+    @CrudOperation(operation=UPDATE, resource=REVIEW)
+    @PutMapping("/{id}")
+    public @NonNull ResponseEntity<ReviewDto> update(
+            @Parameter(description="Unique identifier of the REVIEW to update.", required=true)
+            @PathVariable Long id,
+            @Parameter(description="Data of the REVIEW to update.", required=true)
+            @RequestBody @Valid ReviewDto reviewDto) {
+        return super.update(id, reviewDto);
+    }
+
+    @Operation
+    @CrudOperation(operation=DELETE, resource=REVIEW)
+    @DeleteMapping("/{id}")
+    public @NonNull ResponseEntity<Void> delete(
+            @Parameter(description="Unique identifier of the REVIEW to delete.", required=true)
+            @PathVariable Long id) {
+        return super.delete(id);
+    }
+
+    @Operation
+    @CrudOperation(operation=FILTER, resource=REVIEW)
+    @GetMapping("/filter")
+    public ResponseEntity<ReviewDto> filter(
+            @Parameter(description="PosId of the REVIEW to retrieve.", required=true)
+            @Parameter(description="Approve of the REVIEW to retrieve.", required=true)
+            @RequestParam("") Long PosId) {
+        @RequestParam(approved) Boolean approved) {
+            return ResponseEntity.ok(
+                    reviewDtoMapper.fromDomain(reviewService.getBy(id))
+
+        }
