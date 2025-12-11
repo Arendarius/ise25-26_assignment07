@@ -25,6 +25,7 @@ public class ReviewServiceImpl extends CrudServiceImpl<Review, Long> implements 
     private final PosDataService posDataService;
     // TODO: Try to find out the purpose of this class and how it is connected to the application.yaml configuration file.
     private final ApprovalConfiguration approvalConfiguration;
+    // der approval min count wird ind der application.yaml auf 3 gesetzt
 
     public ReviewServiceImpl(@NonNull ReviewDataService reviewDataService,
                              @NonNull UserDataService userDataService,

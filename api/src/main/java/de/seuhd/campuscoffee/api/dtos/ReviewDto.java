@@ -15,12 +15,12 @@ public record ReviewDto (
         @Nullable LocalDateTime updatedAt, // is set when creating or updating a POS
         // TODO: Implement ReviewDto
         @Nonnull Long posId,
-        @Nonnull Long userId,
+        @Nonnull Long authorId,
         @NotBlank(message = "Review cannot be empty.")
         @Nonnull String review,
         @Min(value = 0, message = "Approval count must be greater than or equal to 0.")
         @Nonnull Integer approvalCount,
-        @Nonnull Boolean approved
+        @Nullable Boolean approved
 
 
 ) implements Dto<Long> {
