@@ -96,10 +96,16 @@ public class ReviewController extends CrudController<Review, ReviewDto, Long> {
     @GetMapping("/filter")
     public ResponseEntity <List<ReviewDto>> filter(
             @Parameter(description="PosId of the REVIEW to retrieve.", required=true)
+            @RequestParam("posId") Long posId,
             @Parameter(description="Approve of the REVIEW to retrieve.", required=true)
-            @RequestParam("posId") Long PosId) {
-            @RequestParam(approved) Boolean approved) {
-            return ResponseEntity.ok(
-                    reviewDtoMapper.fromDomain(reviewService.getApprovedByPosId(id))
+            @RequestParam("approved") Boolean approved) {
+        List<Review> filteredReviews = reviewService.filter(posId, approved);
+        
+        //konvertiert die liste in einzelnde objekte
+        List<ReviewDto> reviewDtos = filteredReviews.stream()
+                .map(review -> reviewDtoMapper.fromDomain(review)).toList();
 
-        }
+        return ResponseEntity.ok(reviewDtos);
+    }
+        
+}
