@@ -94,12 +94,12 @@ public class ReviewController extends CrudController<Review, ReviewDto, Long> {
     @Operation
     @CrudOperation(operation=FILTER, resource=REVIEW)
     @GetMapping("/filter")
-    public ResponseEntity<ReviewDto> filter(
+    public ResponseEntity <List<ReviewDto>> filter(
             @Parameter(description="PosId of the REVIEW to retrieve.", required=true)
             @Parameter(description="Approve of the REVIEW to retrieve.", required=true)
-            @RequestParam("") Long PosId) {
-        @RequestParam(approved) Boolean approved) {
+            @RequestParam("posId") Long PosId) {
+            @RequestParam(approved) Boolean approved) {
             return ResponseEntity.ok(
-                    reviewDtoMapper.fromDomain(reviewService.getBy(id))
+                    reviewDtoMapper.fromDomain(reviewService.getApprovedByPosId(id))
 
         }

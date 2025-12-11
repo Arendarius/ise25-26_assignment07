@@ -10,6 +10,9 @@ import org.jspecify.annotations.Nullable;
 public record ReviewDto (
     @Nullable Long id
     // TODO: Implement ReviewDto
+
+    @Nonnull Boolean false
+
 ) implements Dto<Long> {
     @Override
     public @Nullable Long getId() {
