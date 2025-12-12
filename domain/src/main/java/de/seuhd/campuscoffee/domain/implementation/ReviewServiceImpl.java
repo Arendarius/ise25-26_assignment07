@@ -2,6 +2,8 @@ package de.seuhd.campuscoffee.domain.implementation;
 
 import de.seuhd.campuscoffee.domain.configuration.ApprovalConfiguration;
 import de.seuhd.campuscoffee.domain.model.objects.Review;
+import de.seuhd.campuscoffee.domain.model.objects.Pos;
+import de.seuhd.campuscoffee.domain.model.objects.User;
 import de.seuhd.campuscoffee.domain.ports.api.ReviewService;
 import de.seuhd.campuscoffee.domain.ports.data.CrudDataService;
 import de.seuhd.campuscoffee.domain.ports.data.PosDataService;
@@ -47,27 +49,27 @@ public class ReviewServiceImpl extends CrudServiceImpl<Review, Long> implements 
     @Transactional
     public @NonNull Review upsert(@NonNull Review review) {
         // TODO: Implement the missing business logic here
-// In: domain/src/main/java/de/seuhd/campuscoffee/domain/implementation/ReviewServiceImpl.java
+        if (review.getId() == null) {
+            // Lade die zugehörigen Objekte, die für die filter-Methode benötigt werden.
+            Pos pos = posDataService.getById(review.posId());
+            User author = userDataService.getById(review.authorId());
 
-        @Override
-        @Transactional
-        public @NonNull Review upsert(@NonNull Review review) {
-            // Case 1: This is a new review (CREATE operation)
-            if (review.getId() == null) {
-                // For new reviews set approval count = 0 and approved = false
-                Review newReview = review.toBuilder()
-                        .approvalCount(0)
-                        .approved(false)
-                        .build();
-                // Delegate the actual database insertion to the parent class.
-                return super.upsert(newReview);
+            // Pruefe mit filter-Methode, ob bereits eine Review existiert.
+            if (!reviewDataService.filter(pos, author).isEmpty()) {
+                throw new IllegalStateException("User has already submitted a review for this POS.");
+            }
+
+            // Setze die Startwerte für die geschützten Felder.
+            review = review.toBuilder()
+                    .approvalCount(0)
+                    .approved(false)
+                    .build();
             } else {
                 review = dataService().getById(review.getId()).toBuilder()
                         .review(review.review()) // Nur der Text wird aus der Anfrage übernommen
                         .build();
 
             }
-        }
         return super.upsert(review);
     }
 
@@ -89,7 +91,7 @@ public class ReviewServiceImpl extends CrudServiceImpl<Review, Long> implements 
 
         // validate that the review exists
         // TODO: Implement the required business logic here
-        Review review = reviewDataService.getById(review.id());
+        reviewDataService.getById(review.id());
 
         // a user cannot approve their own review
         // TODO: Implement the required business logic here

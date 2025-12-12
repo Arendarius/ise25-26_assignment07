@@ -108,13 +108,15 @@ public class ReviewController extends CrudController<Review, ReviewDto, Long> {
         return ResponseEntity.ok(reviewDtos);
     }
 
-    @Operation(operation=UPDATE, resource=REVIEW)
-    @updateMapping("/approve")
-    public @ResponseEntity<ReviewDto> approve(
+    @Operation(operation=PUT, resource=REVIEW)
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<ReviewDto> approve(
         @PathVariable Long id,
-        @RequestParam ("approve") Long user_id) {
+        @RequestParam ("user_id") Long user_id) {
+        Review review = reviewService.getById(id);
+        Review approvedReview = reviewService.approve(review, user_id);
 
-        return
+        return ResponseEntity.ok(mapper().fromDomain(approvedReview));
     }
 
 

@@ -1,6 +1,6 @@
 package de.seuhd.campuscoffee.api.dtos;
 
-import lombok.Builder;
+lombok.Builder;
 import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -14,6 +14,12 @@ public record ReviewDto (
         @Nullable LocalDateTime createdAt, // is null when using DTO to create a new POS
         @Nullable LocalDateTime updatedAt, // is set when creating or updating a POS
         // TODO: Implement ReviewDto
+        @Nonnull Long posId,
+        @Nonnull Long authorId,
+        @NotBlank(message = "Review cannot be empty.")
+        @Nonnull String review,
+        @Min(value = 0, message = "Approval count must be greater than or equal to 0.")
+        @Nonnull        // TODO: Implement ReviewDto
         @Nonnull Long posId,
         @Nonnull Long authorId,
         @NotBlank(message = "Review cannot be empty.")
