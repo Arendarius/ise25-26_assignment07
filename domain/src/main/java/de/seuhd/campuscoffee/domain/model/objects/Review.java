@@ -13,10 +13,10 @@ public record Review(
         @Nullable Long id, // null when the review has not been created yet
         //TODO: Implement review domain model.
         @NonNull Long posId,
-        @NonNull Long userId,
+        @NonNull Long authorId,
         @NonNull String review,
         @NonNull Integer approvalCount, // is updated by the domain module
-        @NonNull Boolean approved, // is determined by the domain module
+        @NonNull Boolean approved // is determined by the domain module
 ) implements DomainModel<Long> {
     @Override
     public Long getId() {

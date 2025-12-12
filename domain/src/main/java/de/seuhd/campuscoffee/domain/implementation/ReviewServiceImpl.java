@@ -47,7 +47,27 @@ public class ReviewServiceImpl extends CrudServiceImpl<Review, Long> implements 
     @Transactional
     public @NonNull Review upsert(@NonNull Review review) {
         // TODO: Implement the missing business logic here
+// In: domain/src/main/java/de/seuhd/campuscoffee/domain/implementation/ReviewServiceImpl.java
 
+        @Override
+        @Transactional
+        public @NonNull Review upsert(@NonNull Review review) {
+            // Case 1: This is a new review (CREATE operation)
+            if (review.getId() == null) {
+                // For new reviews set approval count = 0 and approved = false
+                Review newReview = review.toBuilder()
+                        .approvalCount(0)
+                        .approved(false)
+                        .build();
+                // Delegate the actual database insertion to the parent class.
+                return super.upsert(newReview);
+            } else {
+                review = dataService().getById(review.getId()).toBuilder()
+                        .review(review.review()) // Nur der Text wird aus der Anfrage übernommen
+                        .build();
+
+            }
+        }
         return super.upsert(review);
     }
 
@@ -65,18 +85,27 @@ public class ReviewServiceImpl extends CrudServiceImpl<Review, Long> implements 
 
         // validate that the user exists
         // TODO: Implement the required business logic here
+        userDataService.getById(userId);
 
         // validate that the review exists
         // TODO: Implement the required business logic here
+        Review review = reviewDataService.getById(review.id());
 
         // a user cannot approve their own review
         // TODO: Implement the required business logic here
+        if (review.authorId().equals(userId)) {
+            throw new IllegalArgumentException("Users cannot approve their own reviews.");
+        }
 
         // increment approval count
         // TODO: Implement the required business logic here
+        review = review.toBuilder()
+                .approvalCount(review.approvalCount() + 1)
+                .build();
 
         // update approval status to determine if the review now reaches the approval quorum
         // TODO: Implement the required business logic here
+        review = updateApprovalStatus(review);
 
         return reviewDataService.upsert(review);
     }
